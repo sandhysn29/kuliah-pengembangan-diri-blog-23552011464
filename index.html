@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Tangga yang Masih Kunaiki: Belajar Web Development Sambil Kerja Marketing — Sandhy Safarudin Nurdiansyah</title>
+    <meta name="description" content="Cerita pengalaman nyata belajar web development sambil kerja marketing: dari serangan malware judol di sepuluh domain, migrasi ke VPS, sampai pertama kali paham codebase dan alur deploy." />
+    <meta name="author" content="Sandhy Safarudin Nurdiansyah" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Tangga yang Masih Kunaiki: Belajar Web Development Sambil Kerja Marketing" />
+    <meta property="og:description" content="Saya belajar bukan lewat tutorial, tapi lewat musibah — dan lewat tanggung jawab. Catatan belajar seorang digital marketer yang pelan-pelan masuk ke dapur website." />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="article:author" content="Sandhy Safarudin Nurdiansyah" />
+    <meta property="article:published_time" content="2026-11-23" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Tangga yang Masih Kunaiki: Belajar Web Development Sambil Kerja Marketing" />
+    <meta name="twitter:description" content="Cerita belajar web development sambil kerja marketing — dari malware judol, migrasi VPS, sampai paham codebase." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #F4EFE6;
+        --bg-soft: #EFE8DA;
+        --surface: #FBF8F1;
+        --ink: #282522;
+        --ink-soft: #575046;
+        --ink-faint: #8A7F6E;
+        --line: #D9CFBB;
+        --line-strong: #C4B797;
+        --accent: #D6A928;
+        --accent-deep: #A87F0E;
+        --accent-ink: #282522;
+        --card-dark: #2B2721;
+        --radius: 20px;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #171410;
+          --bg-soft: #1D1915;
+          --surface: #221E19;
+          --ink: #F1EAD9;
+          --ink-soft: #C9BFA9;
+          --ink-faint: #978A74;
+          --line: #3A342A;
+          --line-strong: #554B3A;
+          --accent: #D6A928;
+          --accent-deep: #E4BC45;
+          --accent-ink: #1B1813;
+          --card-dark: #100E0B;
+          color-scheme: dark;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      ::selection { background: var(--accent); color: #1B1813; }
+      a { color: inherit; }
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2rem; }
+
+      /* reading progress */
+      .progress {
+        position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+        background: var(--accent); z-index: 60;
+      }
+
+      .wrap { max-width: 1160px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 56px); }
+
+      /* ---------- top bar ---------- */
+      .topbar {
+        display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        padding: 22px 0 0;
+      }
+      .brand {
+        display: inline-flex; align-items: center; gap: 12px; text-decoration: none;
+        min-height: 44px;
+      }
+      .brand-mark {
+        width: 38px; height: 38px; border-radius: 50%; flex: none;
+        border: 1.5px solid var(--ink); display: grid; place-items: center;
+        font-weight: 700; font-size: 17px;
+      }
+      .brand-text { line-height: 1.15; }
+      .brand-text strong { display: block; font-size: 15px; font-weight: 650; letter-spacing: -0.01em; }
+      .brand-text span {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint);
+      }
+      .topbar-link {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+        text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        padding: 10px 4px; min-height: 44px; color: var(--ink-soft);
+      }
+      .topbar-link:hover { color: var(--ink); }
+      .topbar-link .arr { color: var(--accent-deep); }
+
+      /* ---------- hero ---------- */
+      .hero {
+        display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+        gap: clamp(28px, 5vw, 64px); align-items: stretch;
+        padding: clamp(40px, 7vw, 84px) 0 clamp(36px, 5vw, 56px);
+        border-bottom: 1px solid var(--line);
+      }
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 9px;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 11.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+        color: var(--ink-soft); margin: 0 0 26px;
+      }
+      .eyebrow::before {
+        content: ""; width: 8px; height: 8px; border-radius: 50%;
+        background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+        flex: none;
+      }
+      h1 {
+        font-size: clamp(40px, 6.2vw, 76px); line-height: 0.98; letter-spacing: -0.03em;
+        font-weight: 750; margin: 0 0 28px; text-wrap: balance;
+      }
+      h1 .hl { color: var(--accent-deep); }
+      @media (prefers-color-scheme: dark) { h1 .hl { color: var(--accent); } }
+      .lede {
+        font-size: clamp(17px, 2vw, 20px); line-height: 1.55; color: var(--ink-soft);
+        max-width: 34em; margin: 0 0 34px; font-weight: 420;
+      }
+      .meta {
+        display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: center;
+        border-top: 1px dashed var(--line-strong); padding-top: 20px;
+      }
+      .meta-item { line-height: 1.3; }
+      .meta-item .k {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint);
+        display: block; margin-bottom: 3px;
+      }
+      .meta-item .v { font-size: 14.5px; font-weight: 580; }
+      .read-chip {
+        margin-left: auto; display: inline-flex; align-items: center; gap: 8px;
+        border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 14px;
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; letter-spacing: 0.04em;
+        background: var(--surface);
+      }
+      .read-chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+      /* hero side card — the staircase */
+      .hero-card {
+        background: var(--card-dark); color: #F1EAD9; border-radius: var(--radius);
+        padding: 26px 26px 22px; display: flex; flex-direction: column;
+        border: 1px solid var(--line);
+      }
+      .hero-card .hc-head {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #A99C82;
+        border-bottom: 1px dashed #4A4232; padding-bottom: 14px; margin-bottom: 8px;
+      }
+      .hero-card svg { width: 100%; height: auto; display: block; margin: auto 0; }
+      .hero-card .hc-foot {
+        border-top: 1px dashed #4A4232; padding-top: 14px; margin-top: 8px;
+        font-size: 14px; line-height: 1.5; color: #CFC4AB;
+      }
+      .hero-card .hc-foot strong { color: #F1EAD9; font-weight: 620; }
+
+      /* ---------- article ---------- */
+      .article-shell {
+        display: grid; grid-template-columns: 150px minmax(0, 680px);
+        gap: clamp(24px, 5vw, 72px); justify-content: center;
+        padding: clamp(40px, 6vw, 72px) 0 8px;
+      }
+      .rail { position: relative; }
+      .rail-inner { position: sticky; top: 32px; }
+      .rail .r-label {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint);
+        margin: 0 0 14px;
+      }
+      .rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+      .rail a {
+        display: flex; gap: 10px; align-items: baseline; text-decoration: none;
+        padding: 9px 10px; margin-left: -10px; border-radius: 10px; min-height: 40px;
+        font-size: 13.5px; font-weight: 550; color: var(--ink-soft);
+      }
+      .rail a .n {
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; color: var(--ink-faint);
+      }
+      .rail a:hover, .rail a.active { color: var(--ink); background: var(--bg-soft); }
+      .rail a.active .n { color: var(--accent-deep); }
+
+      article { min-width: 0; }
+      article section { scroll-margin-top: 28px; }
+      .sec-head { display: flex; align-items: baseline; gap: 14px; margin: 54px 0 20px; }
+      article section:first-child .sec-head { margin-top: 0; }
+      .sec-num {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent-deep);
+        border: 1px solid var(--line-strong); border-radius: 999px; padding: 5px 11px; flex: none;
+        background: var(--surface);
+      }
+      @media (prefers-color-scheme: dark) { .sec-num { color: var(--accent); } }
+      .sec-head h2 {
+        font-size: clamp(24px, 3.4vw, 32px); letter-spacing: -0.02em; line-height: 1.08;
+        font-weight: 700; margin: 0;
+      }
+      article p {
+        font-size: 18.5px; line-height: 1.78; font-weight: 420; color: var(--ink);
+        margin: 0 0 26px; text-wrap: pretty;
+      }
+      article p em { font-style: italic; }
+      .dropcap::first-letter {
+        font-size: 3.35em; font-weight: 750; float: left; line-height: 0.82;
+        padding: 6px 12px 0 0; color: var(--accent-deep);
+      }
+      @media (prefers-color-scheme: dark) { .dropcap::first-letter { color: var(--accent); } }
+      .pivot-line {
+        font-size: clamp(21px, 3vw, 26px); line-height: 1.35; font-weight: 640; letter-spacing: -0.015em;
+        margin: 6px 0 30px; padding-left: 20px; border-left: 3px solid var(--accent);
+      }
+
+      /* pull quote */
+      .pullquote {
+        margin: 48px 0; padding: 34px clamp(22px, 4vw, 40px) 30px;
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        position: relative;
+      }
+      .pullquote::before {
+        content: "“"; position: absolute; top: -6px; left: 22px;
+        font-size: 84px; font-weight: 800; color: var(--accent); line-height: 1;
+      }
+      .pullquote p {
+        font-size: clamp(23px, 3.4vw, 31px); line-height: 1.32; font-weight: 650; letter-spacing: -0.018em;
+        margin: 18px 0 14px;
+      }
+      .pullquote cite {
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-style: normal;
+        font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint);
+      }
+
+      /* deploy diagram */
+      .deploy {
+        margin: 40px 0 8px; border: 1px solid var(--line); border-radius: var(--radius);
+        background: var(--bg-soft); padding: clamp(20px, 4vw, 30px);
+      }
+      .deploy .d-label {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint);
+        margin: 0 0 18px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      }
+      .deploy-flow { display: flex; align-items: stretch; gap: 10px; }
+      .d-step {
+        flex: 1; background: var(--surface); border: 1px solid var(--line-strong);
+        border-radius: 14px; padding: 16px 16px 14px; min-width: 0;
+      }
+      .d-step .d-num {
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px;
+        color: var(--accent-deep); letter-spacing: 0.12em; display: block; margin-bottom: 6px;
+      }
+      @media (prefers-color-scheme: dark) { .d-step .d-num { color: var(--accent); } }
+      .d-step strong { display: block; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+      .d-step span.d-desc { font-size: 13px; line-height: 1.45; color: var(--ink-soft); display: block; }
+      .d-step.final { background: var(--card-dark); border-color: var(--card-dark); color: #F1EAD9; }
+      .d-step.final span.d-desc { color: #B7AB90; }
+      .d-step.final .d-num { color: var(--accent); }
+      .d-arrow { align-self: center; flex: none; color: var(--accent-deep); font-weight: 700; font-size: 18px; }
+      @media (prefers-color-scheme: dark) { .d-arrow { color: var(--accent); } }
+      .deploy .d-tools {
+        margin: 18px 0 0; padding-top: 14px; border-top: 1px dashed var(--line-strong);
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px;
+        letter-spacing: 0.06em; color: var(--ink-soft);
+        display: flex; flex-wrap: wrap; gap: 8px 18px;
+      }
+      .deploy .d-tools b { color: var(--ink); font-weight: 600; }
+
+      .end-mark {
+        display: flex; align-items: center; gap: 14px; margin: 46px 0 0;
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px;
+        letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint);
+      }
+      .end-mark::before, .end-mark::after { content: ""; height: 1px; background: var(--line); flex: 1; }
+      .end-mark .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+
+      /* ---------- author footer ---------- */
+      .author {
+        margin: clamp(48px, 7vw, 80px) 0 0; border-top: 1px solid var(--line);
+        padding: clamp(36px, 5vw, 56px) 0 64px;
+      }
+      .author-card {
+        display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(18px, 4vw, 34px);
+        align-items: center; background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: clamp(22px, 4vw, 36px);
+      }
+      .avatar {
+        width: 76px; height: 76px; border-radius: 50%; flex: none;
+        background: var(--card-dark); color: #F1EAD9; display: grid; place-items: center;
+        font-size: 32px; font-weight: 750; border: 2px solid var(--accent);
+      }
+      .author-card .a-label {
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px;
+        letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 7px;
+      }
+      .author-card h3 { margin: 0 0 6px; font-size: clamp(21px, 3vw, 27px); letter-spacing: -0.02em; font-weight: 720; }
+      .author-card .a-role { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink-soft); max-width: 42em; }
+      .btn-house {
+        display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+        background: var(--accent); color: #1B1813; font-weight: 680; font-size: 15px;
+        padding: 14px 22px; border-radius: 999px; min-height: 48px; white-space: nowrap;
+        transition: transform .18s ease, box-shadow .18s ease;
+      }
+      .btn-house:hover { transform: translateY(-2px); box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 35%, transparent); }
+      .colophon {
+        display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+        margin-top: 26px; font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint);
+      }
+      .colophon a { text-decoration: none; padding: 6px 0; display: inline-block; }
+      .colophon a:hover { color: var(--ink); }
+
+      /* Article content is always fully visible — no entrance hiding,
+         so the text can never be stranded invisible. */
+      .rv { opacity: 1; }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .btn-house { transition: none; }
+      }
+
+      /* ---------- responsive ---------- */
+      @media (max-width: 900px) {
+        .hero { grid-template-columns: 1fr; }
+        .hero-card { max-width: 520px; }
+        .article-shell { grid-template-columns: minmax(0, 680px); }
+        .rail { display: none; }
+        .read-chip { margin-left: 0; }
+      }
+      @media (max-width: 640px) {
+        article p { font-size: 17.5px; line-height: 1.75; }
+        .deploy-flow { flex-direction: column; }
+        .d-arrow { transform: rotate(90deg); }
+        .author-card { grid-template-columns: 1fr; justify-items: start; }
+        .topbar-link .lbl { display: none; }
+        .sec-head { gap: 10px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress" id="progress" aria-hidden="true"></div>
+
+    <div class="wrap">
+      <!-- top bar -->
+      <header class="topbar">
+        <a class="brand" href="https://sandhysafarudinnur.my.id" target="_blank" rel="noopener">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span class="brand-text">
+            <strong>Sandhy Safarudinnur</strong>
+            <span>Rumah Sandhy · Ruang Baca</span>
+          </span>
+        </a>
+        <a class="topbar-link" href="https://sandhysafarudinnur.my.id" target="_blank" rel="noopener">
+          <span class="lbl">Kembali ke rumah</span><span class="arr" aria-hidden="true">→</span>
+        </a>
+      </header>
+
+      <!-- hero -->
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Ruang Baca · Stories · Catatan Belajar</p>
+          <h1>Tangga yang Masih Kunaiki: Belajar <span class="hl">Web Development</span> Sambil Kerja Marketing</h1>
+          <p class="lede">Saya bukan orang yang belajar web development dari nol di kelas, dengan silabus rapi dan modul berurutan. Saya belajar karena keadaan yang memaksa, dan karena penasaran yang tidak pernah benar-benar hilang.</p>
+          <div class="meta">
+            <div class="meta-item">
+              <span class="k">Ditulis oleh</span>
+              <span class="v">Sandhy Safarudin Nurdiansyah</span>
+            </div>
+            <div class="meta-item">
+              <span class="k">Tanggal</span>
+              <span class="v">23 November 2026</span>
+            </div>
+            <span class="read-chip">± 4 menit baca</span>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-label="Ilustrasi tangga">
+          <div class="hc-head"><span>Papan Nama · No. 02</span><span aria-hidden="true">○ ○</span></div>
+          <svg viewBox="0 0 300 190" role="img" aria-label="Tangga naik menuju pintu yang terbuka dengan cahaya kuning">
+            <line x1="14" y1="168" x2="286" y2="168" stroke="#4A4232" stroke-width="1.5"/>
+            <!-- steps -->
+            <g fill="none" stroke="#CFC4AB" stroke-width="1.5">
+              <path d="M36 168 V146 H78"/>
+              <path d="M78 146 V124 H120"/>
+              <path d="M120 124 V102 H162"/>
+              <path d="M162 102 V80 H204"/>
+            </g>
+            <!-- door at the top -->
+            <path d="M204 80 V34 a10 10 0 0 1 20 0 V80" fill="#3A342A" stroke="#CFC4AB" stroke-width="1.5"/>
+            <path d="M224 34 a10 10 0 0 1 10 10 V80 h-10 Z" fill="#D6A928"/>
+            <circle cx="216" cy="58" r="2.4" fill="#D6A928"/>
+            <!-- lamp glow -->
+            <circle cx="57" cy="128" r="4" fill="#D6A928"/>
+            <circle cx="57" cy="128" r="11" fill="#D6A928" opacity="0.18"/>
+            <circle cx="141" cy="84" r="4" fill="#D6A928" opacity="0.85"/>
+            <circle cx="141" cy="84" r="11" fill="#D6A928" opacity="0.14"/>
+          </svg>
+          <p class="hc-foot"><strong>Satu anak tangga dalam satu waktu.</strong><br />Bukan menunggu sampai siap — tapi mengambil tanggung jawab satu langkah lebih jauh dari yang dikuasai.</p>
+        </aside>
+      </div>
+
+      <!-- article -->
+      <div class="article-shell">
+        <nav class="rail" aria-label="Isi artikel">
+          <div class="rail-inner">
+            <p class="r-label">Di cerita ini</p>
+            <ol>
+              <li><a href="#penasaran" data-spy="penasaran"><span class="n">01</span>Penasaran</a></li>
+              <li><a href="#musibah" data-spy="musibah"><span class="n">02</span>Musibah</a></li>
+              <li><a href="#titik-balik" data-spy="titik-balik"><span class="n">03</span>Titik Balik</a></li>
+              <li><a href="#pelajaran" data-spy="pelajaran"><span class="n">04</span>Pelajaran</a></li>
+            </ol>
+          </div>
+        </nav>
+
+        <article>
+          <section id="penasaran">
+            <div class="sec-head rv"><span class="sec-num">01</span><h2>Penasaran yang Tidak Hilang</h2></div>
+            <p class="dropcap rv">Saya bukan orang yang belajar web development dari nol di kelas, dengan silabus rapi dan modul berurutan. Saya belajar karena keadaan yang memaksa, dan karena penasaran yang tidak pernah benar-benar hilang.</p>
+            <p class="rv">Kerjaan saya digital marketing. Sehari-hari saya mengurus SEO, Google Ads, konten, dan website. Saya menangani sekitar sepuluh domain WordPress. Di atas kertas, semuanya terlihat seperti pekerjaan marketing biasa: datangkan traffic, optimasi halaman, ukur hasilnya. Tapi semakin lama saya bekerja dengan website, semakin sering muncul satu pertanyaan yang mengganggu: kenapa halaman ini begini?</p>
+            <p class="rv">Awalnya pertanyaannya sederhana. Kenapa loading-nya lambat. Kenapa tampilannya berantakan di perangkat tertentu. Kenapa perubahan kecil di satu tempat bisa merembet ke tempat lain. Lama-lama pertanyaannya bergeser: bagaimana semua ini sebenarnya dibangun, dan bisakah saya ikut membangunnya?</p>
+          </section>
+
+          <section id="musibah">
+            <div class="sec-head rv"><span class="sec-num">02</span><h2>Jawabannya Datang Lewat Musibah</h2></div>
+            <p class="pivot-line rv">Jawaban itu datang bukan lewat tutorial, tapi lewat musibah.</p>
+            <p class="rv">Suatu hari server kami kena serangan malware judol. Bukan satu domain, tapi sepuluh domain sekaligus. Sepuluh. Semua yang saya urus tiap hari tiba-tiba jadi ladang iklan judi online. Rasanya campur aduk: frustrasi, panik, dan malu — karena sebagai orang yang sehari-hari 'mengurus website', saya tiba-tiba sadar betapa sedikitnya yang saya pahami tentang apa yang ada di baliknya.</p>
+            <p class="rv">Tidak ada yang bisa saya lempar ke orang lain waktu itu. Jadi saya turun tangan langsung. Saya mengurusi keamanan servernya, memilah plugin mana yang rentan dan berpotensi membawa masuk malware, mengoptimasi dari servernya langsung lewat SSH. Dan akhirnya saya mengambil keputusan yang waktu itu terasa besar: migrasi dari shared hosting ke VPS.</p>
+            <p class="rv">Di titik itulah belajar saya berubah bentuk. Di shared hosting, saya hanya pengguna. Di VPS, saya yang bertanggung jawab. Tidak ada lagi tombol ajaib dan tidak ada lagi yang bisa disalahkan kalau sesuatu rusak. Saya harus memahami sendiri cara kerja server yang saya pegang.</p>
+          </section>
+
+          <section id="titik-balik">
+            <div class="sec-head rv"><span class="sec-num">03</span><h2>Dari VPS ke Codebase</h2></div>
+            <p class="rv">Dari VPS itu, pekerjaan berikutnya datang dengan sendirinya: migrasi aplikasi Laravel ke VPS. Di sana saya belajar jauh lebih banyak — dari setup sampai optimasi keamanan — dan pelan-pelan saya mulai ikut mengembangkan aplikasinya. Bukan karena ada yang menugaskan, tapi karena saya salah satu orang yang memegang akses penuh ke server. Kalau ada yang rusak, saya yang paling cepat bisa melihat dan memperbaikinya.</p>
+            <p class="rv">Lalu datang momen yang sampai sekarang saya ingat: pertama kali saya berhasil memperbaiki bug, dan pertama kali saya benar-benar paham codebase yang saya baca. Bukan sekadar menebak-nebak baris mana yang salah, tapi memahami kenapa baris itu ada di sana. Di momen yang sama saya juga mulai memahami alur deploy yang benar — local, staging, production — dengan Git, GitHub, dan SSH sebagai jalurnya. Bukan teori dari video tutorial, tapi alur yang saya jalani sendiri karena kalau saya salah langkah, yang rusak adalah aplikasi yang dipakai orang sungguhan.</p>
+
+            <div class="deploy rv" role="img" aria-label="Diagram alur deploy: local, lalu staging, lalu production, dijalankan dengan Git, GitHub, dan SSH">
+              <p class="d-label"><span>Alur Deploy</span><span>Local → Staging → Production</span></p>
+              <div class="deploy-flow" aria-hidden="true">
+                <div class="d-step">
+                  <span class="d-num">STEP 01</span>
+                  <strong>Local</strong>
+                  <span class="d-desc">Kode ditulis dan dicoba dulu di mesin sendiri.</span>
+                </div>
+                <span class="d-arrow">→</span>
+                <div class="d-step">
+                  <span class="d-num">STEP 02</span>
+                  <strong>Staging</strong>
+                  <span class="d-desc">Diuji di lingkungan mirip aslinya, sebelum menyentuh yang live.</span>
+                </div>
+                <span class="d-arrow">→</span>
+                <div class="d-step final">
+                  <span class="d-num">STEP 03</span>
+                  <strong>Production</strong>
+                  <span class="d-desc">Aplikasi yang dipakai orang sungguhan. Salah langkah, ini yang rusak.</span>
+                </div>
+              </div>
+              <p class="d-tools" aria-hidden="true"><span>Jalurnya:</span><b>Git</b><b>GitHub</b><b>SSH</b></p>
+            </div>
+          </section>
+
+          <section id="pelajaran">
+            <div class="sec-head rv"><span class="sec-num">04</span><h2>Belajar Saat Bertanggung Jawab</h2></div>
+
+            <figure class="pullquote rv" style="margin-top:0">
+              <blockquote style="margin:0">
+                <p>Belajar paling nempel bukan saat membaca, tapi saat bertanggung jawab.</p>
+              </blockquote>
+              <figcaption><cite>— Sandhy Safarudin Nurdiansyah</cite></figcaption>
+            </figure>
+
+            <p class="rv">Di situlah saya paham satu hal: belajar paling nempel bukan saat membaca, tapi saat bertanggung jawab. Selama website itu 'milik orang lain', rasa penasaran saya hanya berhenti di pertanyaan. Begitu saya yang memegang servernya, pertanyaan itu berubah jadi keharusan. Dan keharusan adalah guru yang jauh lebih galak — tapi juga jauh lebih efektif — daripada tutorial mana pun.</p>
+            <p class="rv">Saya masih jauh dari sebutan developer. Saya masih orang marketing yang sedang belajar. Tapi sekarang saya tahu bedanya: dulu saya bekerja <em>dengan</em> website, sekarang saya mulai bekerja <em>di dalam</em> website. Dulu saya bertanya kenapa halaman ini begini. Sekarang saya bisa membuka kodenya dan mencari sendiri jawabannya.</p>
+            <p class="rv">Tangganya masih kunaiki. Di atas masih ada banyak yang belum saya pahami. Tapi setidaknya sekarang saya tahu cara naiknya: bukan dengan menunggu sampai siap, tapi dengan mengambil tanggung jawab satu langkah lebih jauh dari yang saya kuasai, lalu belajar sambil memperbaikinya.</p>
+            <div class="end-mark" aria-hidden="true"><span class="dot"></span>Tamat · Ruang Baca</div>
+          </section>
+        </article>
+      </div>
+
+      <!-- author footer -->
+      <footer class="author">
+        <div class="author-card rv">
+          <div class="avatar" aria-hidden="true">S</div>
+          <div>
+            <p class="a-label">Ditulis oleh</p>
+            <h3>Sandhy Safarudin Nurdiansyah</h3>
+            <p class="a-role">Mahasiswa Teknik Informatika, Universitas Teknologi Bandung. Digital Marketer yang sedang berkembang ke Web Development — sehari-hari mengurus SEO, Google Ads, konten, dan website.</p>
+          </div>
+          <a class="btn-house" href="https://sandhysafarudinnur.my.id" target="_blank" rel="noopener">Kunjungi rumah Sandhy <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="colophon">
+          <span>© 2026 Sandhy Safarudin Nurdiansyah</span>
+          <a href="https://sandhysafarudinnur.my.id" target="_blank" rel="noopener">sandhysafarudinnur.my.id</a>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        // reading progress
+        var bar = document.getElementById('progress');
+        function onScroll() {
+          var h = document.documentElement;
+          var max = h.scrollHeight - h.clientHeight;
+          bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+        }
+        document.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        // scroll-spy for the side rail
+        var links = {};
+        document.querySelectorAll('[data-spy]').forEach(function (a) { links[a.getAttribute('data-spy')] = a; });
+        var spy = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              Object.keys(links).forEach(function (k) { links[k].classList.remove('active'); });
+              var link = links[e.target.id];
+              if (link) link.classList.add('active');
+            }
+          });
+        }, { rootMargin: '-30% 0px -60% 0px' });
+        document.querySelectorAll('article section[id]').forEach(function (s) { spy.observe(s); });
+      })();
+    </script>
+  </body>
+</html>

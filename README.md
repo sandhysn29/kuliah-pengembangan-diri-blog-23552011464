@@ -7,6 +7,6 @@ NIM: 23552011464
 Kelas: TIF K 23B
 Mata Kuliah: Pengembangan Diri — Universitas Teknologi Bandung
 
-Dibangun dengan HTML + CSS, mengikuti gaya sandhysafarudinnur.my.id.
+Dibangun dengan HTML + CSS.
 
 Link blog: https://sandhysn29.github.io/kuliah-pengembangan-diri-blog-23552011464/
